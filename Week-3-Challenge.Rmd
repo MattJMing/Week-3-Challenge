@@ -1,0 +1,68 @@
+---
+title: "Week 3 Challenge"
+author: "Matt Ming"
+date: "2/1/2022"
+output: html_document
+---
+
+To first get the file for the KamilarAndCooperData, after loading in any
+appropriate packages.
+
+```{r}
+library(tidyverse)
+library(dplyr)
+f <- "https://raw.githubusercontent.com/difiore/ada-2022-datasets/main/KamilarAndCooperData.csv"
+d <- read_csv(f, col_names = TRUE)
+head(d)
+```
+
+First, making a boxplot of Female Body Size by Family
+
+```{r}
+boxplot(log(d$Body_mass_female_mean)~d$Family,
+        main = "Boxplot of Female Body Size by Family",
+        xlab = "Family",ylab = "Female Body Size")
+```
+
+Now, to plot Female Body Size (Body_mass_female_mean) and Female Brain Size 
+(Brain_size_Female_Mean), then log transforming both fields and replotting
+
+```{r}
+plot(x = d$Body_mass_female_mean,y = d$Brain_Size_Female_Mean,
+     main = "Plot of Female Body Size (mass) vs Brain Size",
+     xlab = "Female Body Mass",ylab = "Female Brain Size")
+plot(x = log(d$Body_mass_female_mean),y = log(d$Brain_Size_Female_Mean),
+     main = "Plot of Female Body Size (mass) vs Brain Size (Log Scale on both axis)",
+     xlab = "Female Body Mass",ylab = "Female Brain Size")
+```
+
+Now, plotting a similar plot of log(MaxLongevity_m) by log(Body_mass_female_mean)
+using ggplot
+
+```{r}
+p <- ggplot(data = d, aes(x = log(MaxLongevity_m),
+                          y = log(Body_mass_female_mean),
+                          color = factor(Family)))
+p <- p + ggtitle("Plot of Max Longevity vs Female Body Size (Log scale both axis)")
+p <- p + xlab("log(Max longevity)") + ylab("log(Female body mass)")
+p <- p + geom_point(na.rm = TRUE)
+p <- p + theme(legend.position = "bottom",legend.title = element_blank())
+p
+```
+
+Next, plotting all of the variables Brain_Size_Female_Mean, Body_mass_female_mean,
+MeanGroupSize, WeaningAge_d, MaxLongevity_m, HomeRange_km2, and DayLength_km
+against each other.
+
+```{r}
+s <- select(d,
+            c(Brain_Size_Female_Mean,
+              Body_mass_female_mean,
+              MeanGroupSize,
+              WeaningAge_d,
+              MaxLongevity_m,
+              HomeRange_km2,
+              DayLength_km))
+pairs(s[,1:ncol(s)])
+```
+
